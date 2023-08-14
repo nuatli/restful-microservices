@@ -31,15 +31,21 @@ public class UserDaoService {
 	
 	public User findUserWithId(int id) {
 		try {
+			/*
 			return users
 				.stream()
 				.filter(u -> u.getId() == id)
 				.findFirst()
 				.get();
+			*/
 			/*
 			  Predicate < ? super User> predicate = user -> user.getId().equals(id);
 			  return users.stream().filter(predicate).findFirst().get();
 			 */
+			return users
+					.stream()
+					.filter(u -> u.getId() == id)
+					.findFirst().orElse(null);
 		}catch (Exception e) {
 			System.out.println(e);
 			return null;

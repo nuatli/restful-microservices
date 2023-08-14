@@ -1,6 +1,7 @@
 package com.nuatli.rest.webservices.restfulwebservices.user;
 
 import java.net.URI;
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
 
 
@@ -27,8 +28,12 @@ public class UserController {
 	}
 	
 	@GetMapping("/users/{id}")
-	public User retrieveUser(@PathVariable int id){
-		return service.findUserWithId(id);
+	public User retrieveUser(@PathVariable int id) {
+		User user = service.findUserWithId(id);
+		if(user == null) {
+			throw new UserNotFoundException("id: "+id);
+		}
+		return user;
 	}
 	
 	/* Basit
@@ -43,12 +48,12 @@ public class UserController {
 	@PostMapping("/users") //Oluşturulan userın locationı headerda veriliyor.
 	public ResponseEntity<User> createUser(@RequestBody User user){
 		User savedUser = service.save(user);
-		URI location = 
-				ServletUriComponentsBuilder.fromCurrentRequest()
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
 										   .path("/{id}")
 										   .buildAndExpand(savedUser.getId())
 										   .toUri();
 		return ResponseEntity.created(location).build();
 	}
+	
 	
 }
