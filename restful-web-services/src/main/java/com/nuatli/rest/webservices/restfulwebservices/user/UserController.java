@@ -1,11 +1,15 @@
 package com.nuatli.rest.webservices.restfulwebservices.user;
 
 import java.net.URI;
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
 
+import javax.validation.Valid;
 
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +31,7 @@ public class UserController {
 		return service.findAll();
 	}
 	
+	/* eski
 	@GetMapping("/users/{id}")
 	public User retrieveUser(@PathVariable int id) {
 		User user = service.findUserWithId(id);
@@ -35,8 +40,20 @@ public class UserController {
 		}
 		return user;
 	}
-	
-	/* Basit
+	*/
+	@GetMapping("/users/{id}")
+	public EntityModel<User> retrieveUser(@PathVariable int id) {
+		User user = service.findUserWithId(id);
+		if(user == null) {
+			throw new UserNotFoundException("id: "+id);
+		}
+		
+		EntityModel<User> entityModel = EntityModel.of(user);
+		WebMvcLinkBuilder link = linkTo(methodOn(this.getClass()).retrie);
+		return entityModel;
+	}
+	/*
+	//Basit
 	@PostMapping("/users")
 	public ResponseEntity<User> createUser(@RequestBody User user){
 		service.save(user);
@@ -46,7 +63,7 @@ public class UserController {
 	*/
 	
 	@PostMapping("/users") //Oluşturulan userın locationı headerda veriliyor.
-	public ResponseEntity<User> createUser(@RequestBody User user){
+	public ResponseEntity<User> createUser(@Valid @RequestBody User user){
 		User savedUser = service.save(user);
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
 										   .path("/{id}")
@@ -55,5 +72,9 @@ public class UserController {
 		return ResponseEntity.created(location).build();
 	}
 	
+	@DeleteMapping("/users/{id}")
+	public void deleteUser(@PathVariable int id) {
+		service.deleteUserWithId(id);
+	}
 	
 }

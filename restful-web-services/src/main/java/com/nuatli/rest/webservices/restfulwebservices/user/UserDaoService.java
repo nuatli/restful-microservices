@@ -1,6 +1,7 @@
 package com.nuatli.rest.webservices.restfulwebservices.user;
 
 import java.util.List;
+import java.util.function.Predicate;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -57,6 +58,16 @@ public class UserDaoService {
 		user.setId(++usersCount);
 		users.add(user);
 		return user;
+	}
+	
+	public void deleteUserWithId(int id) {
+		try {
+			Predicate < ? super User> predicate = user -> user.getId().equals(id);
+			users.removeIf(predicate);
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+		
 	}
 	
 	
