@@ -1,4 +1,4 @@
-package com.nuatli.rest.webservices.restfulwebservices.user;
+package com.nuatli.rest.webservices.restfulwebservices.user.controller;
 
 import java.net.URI;
 import java.util.List;
@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import com.nuatli.rest.webservices.restfulwebservices.user.User;
+import com.nuatli.rest.webservices.restfulwebservices.user.UserDaoService;
+import com.nuatli.rest.webservices.restfulwebservices.user.UserNotFoundException;
 
 @RestController
 public class UserController {
@@ -49,7 +53,9 @@ public class UserController {
 		}
 		
 		EntityModel<User> entityModel = EntityModel.of(user);
-		WebMvcLinkBuilder link = linkTo(methodOn(this.getClass()).retrie);
+		//WebMvcLinkBuilder link = linkTo(methodOn(this.getClass()).retrie);
+		WebMvcLinkBuilder link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).retrieveAllUsers());
+		entityModel.add(link.withRel("all-users"));
 		return entityModel;
 	}
 	/*
